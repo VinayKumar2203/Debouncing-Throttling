@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="container">
+        <div>
+            <label for="search">search movies</label>
+            <input type="text" id="query" placeholder="search movie">
+        </div>
+        <div id="display"></div>
+    </div>
+</body>
+</html>
+<script>
+let showData=(data)=>{
+            let display=document.getElementById("display");
+             data.forEach(el => {
+                let card=document.createElement("div")
+                let poster=document.createElement("img")
+                let title=document.createElement("p")
+                let type=document.createElement("h3")
+                let year=document.createElement("h2")
+                poster.src=el.Poster
+                title.textContent=el.Title 
+                type.textContent=el.Type 
+                year.textContent=el.Year 
+                card.append(poster,title,year);
+                display.append(card);
+                
+             });
+        };
+    //  showData();
+
+    let fetchData=async(query ="")=>{
+        try {
+            let res= await fetch(`https://www.omdbapi.com/?s=${query}&apikey=bad97c74`);
+            let data=await res.json()
+            if (data.Response==='True') {
+                showData(data.Search);            
+            }
+            console.log(data,"hello");
+        } catch (error) {
+            console.log("something went wrong");
+        }
+    };
+
+    let id;
+    let debounce=()=>{
+        let query=searchBtn.value;
+        if (id) {
+            clearTimeout(id);
+        }
+        id=setTimeout(()=>{
+           fetchData(query)
+        },1000);
+
+    }
+    let searchBtn=document.getElementById("query");
+     searchBtn.addEventListener("input",debounce)
+     fetchData();
+</script>
+<!-- use http://www.omdbapi.com to create a movie site.  -->
+<!-- create a search bar and apply debouncing to show movies while typing the movie name. -->
+
